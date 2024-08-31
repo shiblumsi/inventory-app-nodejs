@@ -1,12 +1,12 @@
 const express = require("express")
 const productController = require('../controllers/productController')
-
+const authHandler = require("../middlewares/authMiddleware")
 const router = express.Router()
 
 
 router
   .route('/')
-  .get(productController.getAllProduct)
+  .get(authHandler.protected, productController.getAllProduct)
   .post(productController.createProduct)
 
 router

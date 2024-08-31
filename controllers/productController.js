@@ -35,6 +35,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   
     return res.status(200).json({
       status: 'success',
+      user:req.user.name,
       data: allData,
     });
   });
