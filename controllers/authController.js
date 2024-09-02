@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const catchAsync = require("../utils/catchAsync")
 const AppError = require("../utils/appError")
+const { createResetToken } = require("../utils/createResetToken")
+const {sendEmail} = require('../service/sendEmail')
 
 
 exports.register = catchAsync(async (req, res, next)=>{
@@ -46,4 +48,45 @@ exports.login = catchAsync(async (req, res, next)=>{
         status:'ok',
         token
     })
+})
+
+
+exports.forgotPassword = catchAsync(async (req, res,next)=>{
+    const user = await prisma.user.findUnique({
+        where:{email:req.body.email}
+    })
+    
+    
+    if (!user) {
+        return next(new AppError('There is no user with that email address.', 404));
+      }
+    const resetToken = await createResetToken(user)
+    console.log(resetToken);
+
+    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${resetToken}`
+    const message = `Forgot your password? Submit a PATCH request with your new password to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+    try {
+        await sendEmail({
+            email:user.email,
+            subject: 'Password Reset Token, Valid For 10 Minutes!',
+            message
+        })
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'Token sent to email!',
+          });
+    } catch (error) {
+        // await prisma.user.update({
+        //     where:{email:user.email},
+        //     data:{
+        //         passwordResetExpires: null,
+        //         passwordResetToken:null
+        //     }
+        // })
+        console.log('qqqqqq',error);
+        
+        return next( new AppError('There was an error sending the email. Try again later!', 500))
+    }
 })

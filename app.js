@@ -8,8 +8,16 @@ const userRoutes = require('./routes/userRoutes')
 const cartRoutes = require('./routes/cartRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 const paymentRoutes = require('./routes/paymentRoutes')
+const otpRoutes = require('./routes/otpRoutes')
 const AppError = require("./utils/appError")
 const globalErrorHandler = require("./middlewares/globalErrorHandler")
+
+
+// const swaggerUi = require('swagger-ui-express');
+// const swaggerDocument = require('./swagger.json');
+// const swaggerAutogen = require('swagger-autogen')();
+
+
 
 
 dotenv.config()
@@ -20,6 +28,7 @@ app.use(morgan('dev'))
 
 
 
+
 // Routes
 app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/product', productRoutes)
@@ -27,6 +36,7 @@ app.use('/api/v1/auth', userRoutes)
 app.use('/api/v1/cart', cartRoutes)
 app.use('/api/v1/order', orderRoutes)
 app.use('/payment', paymentRoutes)
+app.use('/api/v1/otp', otpRoutes)
 
 //Path Not Found Middleware
 app.all('*', (req, res, next)=>{
@@ -35,5 +45,7 @@ app.all('*', (req, res, next)=>{
 
 // Global Error Handling Middleware
 app.use(globalErrorHandler)
+
+
 
 module.exports = app
