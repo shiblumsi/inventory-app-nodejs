@@ -27,34 +27,34 @@
 //     }
 // }
 
-const admin = require('firebase-admin');
+// const admin = require('firebase-admin');
 
-const serviceAccount = require('../service/firebase-otp.json');
-
-
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+// const serviceAccount = require('../service/firebase-otp.json');
 
 
-exports.sendOtp = async (req, res)=>{
-  const { phoneNumber } = req.body;
 
-  if (!phoneNumber) {
-    return res.status(400).send({ message: 'Phone number is required' });
-  }
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
 
-  try {
-    const recaptchaVerifier = new admin.auth.RecaptchaVerifier('recaptcha-container', {
-      size: 'invisible',
-    });
 
-    const confirmationResult = await admin.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
+// exports.sendOtp = async (req, res)=>{
+//   const { phoneNumber } = req.body;
+
+//   if (!phoneNumber) {
+//     return res.status(400).send({ message: 'Phone number is required' });
+//   }
+
+//   try {
+//     const recaptchaVerifier = new admin.auth.RecaptchaVerifier('recaptcha-container', {
+//       size: 'invisible',
+//     });
+
+//     const confirmationResult = await admin.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
     
-    res.status(200).send({ message: 'OTP sent successfully', data: confirmationResult });
-  } catch (error) {
-    console.error('Error sending OTP:', error);
-    res.status(500).send({ message: 'Error sending OTP', error: error.message });
-  }
-};
+//     res.status(200).send({ message: 'OTP sent successfully', data: confirmationResult });
+//   } catch (error) {
+//     console.error('Error sending OTP:', error);
+//     res.status(500).send({ message: 'Error sending OTP', error: error.message });
+//   }
+// };
