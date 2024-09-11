@@ -15,14 +15,18 @@ const globalErrorHandler = require("./middlewares/globalErrorHandler")
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
+const cors = require('cors');
 
 
 
 dotenv.config()
+
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'))
+app.use(cors());
+
 
 // Load Swagger YAML file
 const swaggerDocument = YAML.load(path.join(__dirname, 'service', 'swagger.yaml'));

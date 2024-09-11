@@ -5,7 +5,8 @@ info:
   description: Simple APIs for managing Inventory
 
 servers:
-  - url: http://localhost:8000
+  - url: https://inventory-app-nodejs.vercel.app  # Production
+  - url: http://localhost:8000                    # Local
 
 
 paths:
