@@ -1,0 +1,612 @@
+openapi: 3.0.0
+info:
+  title: D-BUG INVENTORY API Documentation
+  version: 1.0.0
+  description: Simple APIs for managing Inventory
+
+servers:
+  - url: http://localhost:8000
+
+
+paths:
+# Auth Routes
+  /api/v1/auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/register'
+      responses:
+        201:
+          description: User registered successfully
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login and get JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/login'
+      responses:
+        200:
+          description: Login successful, JWT token returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        401:
+          description: Unauthorized, invalid credentials
+
+  /api/v1/auth/forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Request a password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john@example.com
+      responses:
+        200:
+          description: Password reset email sent
+        400:
+          description: Bad request, invalid email
+
+  /api/v1/auth/reset-password/{token}:
+    post:
+      tags:
+        - Auth
+      summary: Reset the password using a token
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/resetPassword'
+      responses:
+        200:
+          description: Password reset successful
+        400:
+          description: Bad request, invalid token or password
+        404:
+          description: Token not found
+
+  /api/v1/auth/update-password:
+    post:
+      tags:
+        - Auth
+      summary: Update the user's password
+      security:
+        - bearerAuth: []  # Requires JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updatePassword'
+      responses:
+        200:
+          description: Password updated successfully
+        400:
+          description: Bad request, invalid input
+        401:
+          description: Unauthorized, invalid or expired token
+# Product Routes
+  /api/v1/product:
+    get:
+      tags:
+        - Product
+      summary: Retrieve all products
+      security:
+        - bearerAuth: []  # Protected by JWT
+      responses:
+        200:
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/product'
+
+    post:
+      tags:
+        - Product
+      summary: Create a new product
+      security:
+        - bearerAuth: []  # Protected by JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/product'
+      responses:
+        201:
+          description: Product created successfully
+
+  /api/v1/product/{id}:
+    get:
+      tags:
+        - Product
+      summary: Get a product by ID
+      security:
+        - bearerAuth: []  # Protected by JWT
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Product details
+        404:
+          description: Product not found
+
+    put:
+      tags:
+        - Product
+      summary: Update a product by ID
+      security:
+        - bearerAuth: []  # Protected by JWT
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/product'
+      responses:
+        200:
+          description: Product updated successfully
+        404:
+          description: Product not found
+
+    delete:
+      tags:
+        - Product
+      summary: Delete a product by ID
+# Category Routes
+  /api/v1/category:
+    get:
+      tags:
+        - Category
+      summary: Retrieve a list of categories
+      responses:
+        200:
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+    post:
+      tags:
+        - Category
+      summary: Create a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        201:
+          description: Category created successfully
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/category/{id}:
+    get:
+      tags:
+        - Category
+      summary: Get a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The category details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        404:
+          description: Category not found
+    put:
+      tags:
+        - Category
+      summary: Update a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        200:
+          description: Category updated successfully
+        404:
+          description: Category not found
+    delete:
+      tags:
+        - Category
+      summary: Delete a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Category deleted successfully
+        404:
+          description: Category not found
+# Cart Route
+  /api/v1/cart/add:
+    post:
+      tags:
+        - Cart
+      summary: Add an item to the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/add-up-cart'
+      responses:
+        200:
+          description: Item added to cart successfully
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/cart:
+    get:
+      tags:
+        - Cart
+      summary: Retrieve the cart items
+      responses:
+        200:
+          description: A list of items in the cart
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CartItem'
+
+  /api/v1/cart/increase:
+    patch:
+      tags:
+        - Cart
+      summary: Increase the quantity of an item in the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/in-de-dl-cart'
+      responses:
+        200:
+          description: Item quantity increased successfully
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/cart/decrease:
+    patch:
+      tags:
+        - Cart
+      summary: Decrease the quantity of an item in the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/in-de-dl-cart'
+      responses:
+        200:
+          description: Item quantity decreased successfully
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/cart/remove:
+    delete:
+      tags:
+        - Cart
+      summary: Remove an item from the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/in-de-dl-cart'
+      responses:
+        200:
+          description: Item removed from cart successfully
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/cart/clear:
+    delete:
+      tags:
+        - Cart
+      summary: Clear all items from the cart
+      responses:
+        204:
+          description: Cart cleared successfully
+
+  /api/v1/cart/update:
+    put:
+      tags:
+        - Cart
+      summary: Update an item in the cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/add-up-cart'
+      responses:
+        200:
+          description: Cart item updated successfully
+        400:
+          description: Bad request, invalid input
+# order Apis
+  /api/v1/order/place-order:
+    post:
+      tags:
+        - Order
+      summary: Place a new order
+      responses:
+        201:
+          description: Order placed successfully
+        400:
+          description: Bad request, invalid input
+# Payments Apis
+  /api/v1/payment/success:
+    post:
+      tags:
+        - Payment
+      summary: Handle payment success
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentId:
+                  type: string
+                  example: "12345"
+                status:
+                  type: string
+                  example: "success"
+      responses:
+        200:
+          description: Payment success processed
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/payment/fail:
+    post:
+      tags:
+        - Payment
+      summary: Handle payment failure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentId:
+                  type: string
+                  example: "12345"
+                status:
+                  type: string
+                  example: "failure"
+      responses:
+        200:
+          description: Payment failure processed
+        400:
+          description: Bad request, invalid input
+
+  /api/v1/payment/cancel:
+    post:
+      tags:
+        - Payment
+      summary: Handle payment cancellation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paymentId:
+                  type: string
+                  example: "12345"
+                status:
+                  type: string
+                  example: "cancelled"
+      responses:
+        200:
+          description: Payment cancellation processed
+        400:
+          description: Bad request, invalid input
+
+
+# Security scheme for JWT
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # Auth
+    register:
+      type: object
+      properties:
+        name:
+          type: string
+          example: john
+        email:
+          type: string
+          example: john@example.com
+        password:
+          type: string
+          example: password123
+        confirmPassword:
+          type: string
+          example: password123
+
+    login:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john@example.com
+        password:
+          type: string
+          example: password123
+
+    forgotPassword:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john@example.com
+
+    resetPassword:
+      type: object
+      properties:
+        newPassword:
+          type: string
+          example: newpassword123
+        confirmNewPassword:
+          type: string
+          example: newpassword123
+
+
+    updatePassword:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+          example: oldpassword123
+        newPassword:
+          type: string
+          example: newpassword123
+        confirmNewPassword:
+          type: string
+          example: newpassword123
+    
+
+    # Product 
+    product:
+      type: object
+      properties:
+        name:
+          type: string
+          example: laptop
+        description:
+          type: string
+          example: A brand new description
+        price:
+          type: integer
+          example: 10000
+        stock:
+          type: integer
+          example: 10
+        categoryId:
+          type: integer
+          example: 1
+
+    # Category
+    Category:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Kids
+        description:
+          type: string
+          example: A brand new description
+       
+    #Cart 
+    add-up-cart:
+      type: object
+      properties:
+        productId:
+          type: integer
+          example: 1
+        quantity:
+          type: integer
+          example: 5
+
+    in-de-dl-cart:
+      type: object
+      properties:
+        cartItemId:
+          type: integer
+          example: 1
+
+    add-cart:
+      type: object
+      properties:
+        productId:
+          type: integer
+          example: 1
+        quantity:
+          type: integer
+          example: 5
+
+security:
+  - bearerAuth: []  # Protected by JWT

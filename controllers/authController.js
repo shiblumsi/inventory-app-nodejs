@@ -32,10 +32,13 @@ exports.register = catchAsync(async (req, res, next)=>{
 
 exports.login = catchAsync(async (req, res, next)=>{
     const {email, password} = req.body
+    console.log(email, password)
     if(!email || !password){
         return next(new AppError('Please provide email and password!', 400));
     }
     const user = await prisma.user.findUnique({where:{email}})
+    console.log(user);
+    
     if (!user) {
         return next(new AppError('No user found with this email!', 401));
     }

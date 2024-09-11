@@ -12,12 +12,8 @@ const otpRoutes = require('./routes/otpRoutes')
 const AppError = require("./utils/appError")
 const globalErrorHandler = require("./middlewares/globalErrorHandler")
 
-
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./swagger.json');
-// const swaggerAutogen = require('swagger-autogen')();
-
-
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
 
 dotenv.config()
@@ -26,8 +22,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'))
 
+// Load Swagger YAML file
+const swaggerDocument = YAML.load('./service/swagger.yaml');
 
+// Middleware to serve Swagger UI
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
 app.use('/api/v1/category', categoryRoutes)
@@ -37,6 +37,8 @@ app.use('/api/v1/cart', cartRoutes)
 app.use('/api/v1/order', orderRoutes)
 app.use('/payment', paymentRoutes)
 app.use('/api/v1/otp', otpRoutes)
+
+
 
 //Path Not Found Middleware
 app.all('*', (req, res, next)=>{

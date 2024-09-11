@@ -38,7 +38,7 @@ exports.createOrder = catchAsync(async (req, res, next)=>{
         success_url: `${process.env.SSL_SUCCESS_URL}`,
         fail_url: `${process.env.SSL_FAIL_URL}`,
         cancel_url: `${process.env.SSL_CANCEL_URL}`,
-        ipn_url: 'http://localhost:3030/ipn',
+        ipn_url: 'http://localhost:8000/ipn',
         shipping_method: 'Courier',
         product_name: 'Computer.',
         product_category: 'Electronic',
@@ -132,6 +132,25 @@ exports.paymentSuccess = catchAsync(async (req, res, next) => {
             where:{payment:{transactionId:tran_id}},
             data: {status:'Confirmed'}
         })
+        
+        const orders = await prisma.order.findMany({
+            where: { payment: { transactionId: tran_id } },
+            include: { orderItems: true } // Include the orderItems relation
+        });
+
+        // Update the product stock based on the ordered quantity
+        for (const order of orders) {
+            for (const item of order.orderItems) {
+                await prisma.product.update({
+                    where: { id: item.productId },
+                    data: {
+                        stock: {
+                            decrement: item.quantity // Decrease stock by the quantity in the order
+                        }
+                    }
+                });
+            }
+        }
          return res.status(200).json({
             status:'success',
             message: 'Payment successful and order confirmed'
