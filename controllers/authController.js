@@ -69,7 +69,7 @@ exports.forgotPassword = catchAsync(async (req, res,next)=>{
     console.log(resetToken);
 
     const resetURL = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${resetToken}`
-    const message = `Hi ${user.name} \n \n Why Forgot your password? 🤬 \n However Click this link to reset password: ${resetURL}\nIf you didn't forget your password, please ignore this email!`;
+    const message = `Hi ${user.name}, \n \n Why Forgot your password? 🤬 \n\n However Click this link to reset password: ${resetURL}\n\nIf you didn't forget your password, please ignore this email!\n\nThank you!`;
 
     try {
         await sendEmail({
