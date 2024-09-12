@@ -17,7 +17,7 @@ const YAML = require('yamljs');
 const path = require('path');
 const cors = require('cors');
 
-
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
 dotenv.config()
 
@@ -33,7 +33,9 @@ const swaggerDocument = YAML.load(path.join(__dirname, 'service', 'swagger.yaml'
 
 // Middleware to serve Swagger UI
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument,{
+    customCssUrl:CSS_URL
+}));
 
 // Routes
 app.use('/api/v1/category', categoryRoutes)
