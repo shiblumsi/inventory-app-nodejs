@@ -29,16 +29,19 @@ app.use(cors({
     origin: '*'
   }));
 
-
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
 // Load Swagger YAML file
 const swaggerDocument = YAML.load(path.join(__dirname, 'service', 'swagger.yaml'));
 
 // Middleware to serve Swagger UI
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument,{
-    customCssUrl:CSS_URL,
-    // customJsUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js"
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+    customCssUrl: '/swagger-ui.css',
+    customJsUrl: '/swagger-ui-bundle.js',
+    customJs: '/swagger-ui-standalone-preset.js'
 }));
+
 
 // Routes
 app.use('/api/v1/category', categoryRoutes)
