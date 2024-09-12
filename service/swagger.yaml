@@ -528,10 +528,10 @@ components:
     resetPassword:
       type: object
       properties:
-        newPassword:
+        password:
           type: string
           example: newpassword123
-        confirmNewPassword:
+        confirmPassword:
           type: string
           example: newpassword123
 
