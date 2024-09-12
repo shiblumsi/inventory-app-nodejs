@@ -1,25 +1,33 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "./server.js",
-        "use": "@vercel/node",
-        "config": {
-          "includeFiles": [
-            "service/swagger.yaml",
-            "prisma/**"
-          ]
-        }
+  "version": 2,
+  "builds": [
+    {
+      "src": "./server.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "service/swagger.yaml",
+          "prisma/**"
+        ]
       }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/server.js"
-      },
-      { "src": "/api-docs/(.*)", "dest": "/server.js" },
-      { "src": "/swagger-ui.css", "dest": "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css" },
-      { "src": "/swagger-ui-bundle.js", "dest": "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js" }
-    ]
-  }
-  
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/server.js"
+    },
+    { 
+      "src": "/swagger-ui.css", 
+      "dest": "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css" 
+    },
+    { 
+      "src": "/swagger-ui-bundle.js", 
+      "dest": "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js" 
+    },
+    {
+      "src": "/swagger-ui-standalone-preset.js",
+      "dest": "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-standalone-preset.min.js"
+    }
+  ]
+}

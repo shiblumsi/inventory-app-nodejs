@@ -37,7 +37,7 @@ const swaggerDocument = YAML.load(path.join(__dirname, 'service', 'swagger.yaml'
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument,{
     customCssUrl:CSS_URL,
-    customJsUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js"
+    // customJsUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js"
 }));
 
 // Routes
