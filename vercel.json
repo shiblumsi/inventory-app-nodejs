@@ -16,7 +16,10 @@
       {
         "src": "/(.*)",
         "dest": "/server.js"
-      }
+      },
+      { "src": "/api-docs/(.*)", "dest": "/server.js" },
+      { "src": "/swagger-ui.css", "dest": "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css" },
+      { "src": "/swagger-ui-bundle.js", "dest": "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js" }
     ]
   }
   

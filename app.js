@@ -25,7 +25,9 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'))
-app.use(cors());
+app.use(cors({
+    origin: '*'
+  }));
 
 
 // Load Swagger YAML file
@@ -34,7 +36,8 @@ const swaggerDocument = YAML.load(path.join(__dirname, 'service', 'swagger.yaml'
 // Middleware to serve Swagger UI
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument,{
-    customCssUrl:CSS_URL
+    customCssUrl:CSS_URL,
+    customJsUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js"
 }));
 
 // Routes
