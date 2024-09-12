@@ -5,7 +5,7 @@ info:
   description: Simple APIs for managing Inventory
 
 servers:
-  - url: https://inventory-app-nodejs.vercel.app  # Production
+  - url: https://inventory-app-nodejs.onrender.com  # Production
   - url: http://localhost:8000                    # Local
 
 
