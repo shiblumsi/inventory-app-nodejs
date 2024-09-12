@@ -44,7 +44,9 @@ app.use('/api/v1/order', orderRoutes)
 app.use('/payment', paymentRoutes)
 // app.use('/api/v1/otp', otpRoutes)
 
-
+app.get('/',(req,res)=>{
+    res.json({status:'ok', message:"Hi there"})
+})
 
 //Path Not Found Middleware
 app.all('*', (req, res, next)=>{
