@@ -17,9 +17,8 @@
       "src": "/(.*)",
       "dest": "/server.js"
     },
-    { "src": "/swagger-ui.css", "dest": "/public/swagger-ui.css" },
-    { "src": "/swagger-ui-bundle.js", "dest": "/public/swagger-ui-bundle.js" },
-    { "src": "/swagger-ui-standalone-preset.js", "dest": "/public/swagger-ui-standalone-preset.js" }
-  ],
-  "public": "./public"
+    { "src": "/swagger-ui.css", "dest": "/swagger-ui.css" },
+    { "src": "/swagger-ui-bundle.js", "dest": "/swagger-ui-bundle.js" },
+    { "src": "/swagger-ui-standalone-preset.js", "dest": "/swagger-ui-standalone-preset.js" }
+  ]
 }
