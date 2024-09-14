@@ -66,7 +66,7 @@ app.use(passport.initialize())
 // Routes
 
 app.get('/',(req,res)=>{
-    res.json({status:'success', message:"Hi there 🙋‍♀️"})
+    res.json({status:'success', message:"Hi there 🙋‍♀️",APIs:"https://inventory-app-nodejs.onrender.com/api-docs"})
 })
 
 app.get('/auth/google',
