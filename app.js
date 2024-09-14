@@ -66,7 +66,7 @@ app.use(passport.initialize())
 // Routes
 
 app.get('/',(req,res)=>{
-    res.json({status:'ok', message:"Hi there"})
+    res.json({status:'success', message:"Hi there 🙋‍♀️"})
 })
 
 app.get('/auth/google',
