@@ -9,6 +9,11 @@ const cartRoutes = require('./routes/cartRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 const paymentRoutes = require('./routes/paymentRoutes')
 // const otpRoutes = require('./routes/otpRoutes')
+
+const passport = require('./service/passport')
+const session = require('express-session')
+
+
 const AppError = require("./utils/appError")
 const globalErrorHandler = require("./middlewares/globalErrorHandler")
 
@@ -16,6 +21,9 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
 const cors = require('cors');
+const { googleCallback } = require("./controllers/oAuthController")
+
+
 
 const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
@@ -43,7 +51,37 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
 }));
 
 
+//setup session middleware
+// app.use(session({
+//     secret: 'very-strong-secret',
+//     resave:false,
+//     saveUninitialized:true
+// }))
+
+// Initialize Passport middleware
+app.use(passport.initialize())
+//app.use(passport.session())
+
+
 // Routes
+
+app.get('/',(req,res)=>{
+    res.json({status:'ok', message:"Hi there"})
+})
+
+app.get('/auth/google',
+    passport.authenticate('google', {scope:['profile', 'email'],session: false  })
+)
+
+app.get('/api/v1/auth/google/callback',
+    passport.authenticate('google', {session: false ,failureRedirect: '/'}),
+    googleCallback
+    
+)
+
+
+
+
 app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/product', productRoutes)
 app.use('/api/v1/auth', userRoutes)
@@ -52,9 +90,6 @@ app.use('/api/v1/order', orderRoutes)
 app.use('/payment', paymentRoutes)
 // app.use('/api/v1/otp', otpRoutes)
 
-app.get('/',(req,res)=>{
-    res.json({status:'ok', message:"Hi there"})
-})
 
 //Path Not Found Middleware
 app.all('*', (req, res, next)=>{
