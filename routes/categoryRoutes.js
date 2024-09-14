@@ -1,9 +1,11 @@
 const express = require("express")
 const categoryController = require('../controllers/categoryController')
-
+const authHandler = require('../middlewares/authMiddleware')
 
 const router = express.Router()
 
+
+router.use(authHandler.protected, authHandler.restrictTo('admin'));
 
 router
   .route('/')

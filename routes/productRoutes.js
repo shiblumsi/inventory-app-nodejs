@@ -7,8 +7,11 @@ const router = express.Router()
 router
   .route('/')
   .get(authHandler.protected, productController.getAllProduct)
-  .post(productController.createProduct)
+  .post(authHandler.protected,authHandler.restrictTo('admin'),productController.createProduct)
 
+
+  
+router.use(authHandler.protected, authHandler.restrictTo('admin'));
 router
   .route('/:id')
   .get(productController.getSingleProduct)

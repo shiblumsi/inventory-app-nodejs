@@ -19,3 +19,13 @@ exports.protected = catchAsync(async (req, res, next)=>{
     next()
 
 })
+
+
+exports.restrictTo = (...roles)=>{
+    return (req, res, next)=>{
+        if(!roles.includes(req.user.role)){
+            next(new AppError('Only admin can access!!!'))
+        }
+        next()
+    }
+}
