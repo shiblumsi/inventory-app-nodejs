@@ -83,3 +83,22 @@ exports.getCustomerOrders = catchAsync(async (req, res, next) => {
     res.status(200).json({ success: true, data: orders });
   });
   
+
+exports.getMonthlyRevenue = catchAsync(async (req, res, next) => {
+    const { month } = req.query;
+  
+    const revenueData = await prisma.order.groupBy({
+      by: ['paymentMethod'],
+      _sum: { totalAmount: true },
+      where: {
+        //status: 'delivered',
+        createdAt: {
+          gte: new Date(`${month}-01`),
+          lt: new Date(`${month}-31`),
+        },
+      },
+    });
+  
+    res.status(200).json({ success: true, data: revenueData });
+  });
+  
