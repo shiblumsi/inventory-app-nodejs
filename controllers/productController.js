@@ -3,7 +3,7 @@ const catchAsync = require('../utils/catchAsync')
 const {prisma} = require('../DB/db.config')
 // Create Product
 exports.createProduct = catchAsync(async (req, res, next) => {
-    const { name, description, price, stock, categoryId } = req.body;
+    const { name, description, price, stock, categoryId, imageUrls } = req.body;
   
     const newData = await prisma.product.create({
       data: {
@@ -12,7 +12,9 @@ exports.createProduct = catchAsync(async (req, res, next) => {
         price,
         stock,
         categoryId,
+        images:{create: imageUrls.map((url)=>({url}))}
       },
+      include:{images:true}
     });
   
     if (!newData) {
@@ -26,7 +28,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   });
   
   // Get All Products
-  exports.getAllProduct = catchAsync(async (req, res, next) => {
+exports.getAllProduct = catchAsync(async (req, res, next) => {
     const allData = await prisma.product.findMany()
   
     if (!allData || allData.length === 0) {
@@ -41,7 +43,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   });
   
   // Get Single Product
-  exports.getSingleProduct = catchAsync(async (req, res, next) => {
+exports.getSingleProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const singleData = await prisma.product.findUnique({
       where: { id: parseInt(id) },
@@ -58,7 +60,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   });
   
   // Update Product
-  exports.updateProduct = catchAsync(async (req, res, next) => {
+exports.updateProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const { name, description, price, stok, categoryId } = req.body;
   
@@ -84,7 +86,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   });
   
   // Delete Product
-  exports.deleteProduct = catchAsync(async (req, res, next) => {
+exports.deleteProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     
     const deletedData = await prisma.product.delete({
