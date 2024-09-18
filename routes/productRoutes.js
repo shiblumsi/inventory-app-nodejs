@@ -10,11 +10,11 @@ const router = express.Router()
 router
   .route('/')
   .get(authHandler.protected, productController.getAllProduct)
-  .post(authHandler.protected,authHandler.restrictTo('admin'),productController.createProduct)
+  .post(authHandler.adminRequired,productController.createProduct)
 
 
   
-router.use(authHandler.protected, authHandler.restrictTo('admin'));
+router.use(authHandler.adminRequired);
 router
   .route('/:id')
   .get(productController.getSingleProduct)

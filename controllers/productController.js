@@ -3,7 +3,7 @@ const catchAsync = require('../utils/catchAsync')
 const {prisma} = require('../DB/db.config')
 // Create Product
 exports.createProduct = catchAsync(async (req, res, next) => {
-    const { name, description, price, stock, categoryId, imageUrls } = req.body;
+    const { name, description, price, stock, categoryId} = req.body;
   
     const newData = await prisma.product.create({
       data: {
@@ -11,10 +11,9 @@ exports.createProduct = catchAsync(async (req, res, next) => {
         description,
         price,
         stock,
-        categoryId,
-        images:{create: imageUrls.map((url)=>({url}))}
-      },
-      include:{images:true}
+        categoryId
+      }
+      
     });
   
     if (!newData) {

@@ -8,7 +8,7 @@ const router = express.Router()
 
 
 router.post('/:categoryId/files', uploads.categoryFileUpload.array('images', 5), categoryFileController.uploadFiles)
-router.use(authHandler.protected, authHandler.restrictTo('admin'));
+router.use(authHandler.adminRequired);
 
 router
   .route('/')

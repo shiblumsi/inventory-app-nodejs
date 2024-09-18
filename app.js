@@ -10,6 +10,7 @@ const orderRoutes = require('./routes/orderRoutes')
 const adminOrderRoutes = require('./routes/adminOrderRoutes')
 const paymentRoutes = require('./routes/paymentRoutes')
 const productImageRoutes = require('./routes/productFileRoutes')
+const adminRoutes = require('./routes/adminRoutes')
 // const otpRoutes = require('./routes/otpRoutes')
 
 const passport = require('./service/passport')
@@ -87,6 +88,8 @@ app.get('/api/v1/auth/google/callback',
 // Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+
+app.use('/api/v1/admin', adminRoutes)
 app.use('/api/v1/uploads/category', categoryRoutes)
 app.use('/api/v1/product', productRoutes)
 app.use('/api/v1/uploads/product', productImageRoutes)

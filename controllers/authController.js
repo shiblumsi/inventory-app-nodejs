@@ -9,7 +9,7 @@ const {sendEmail} = require('../service/sendEmail')
 
 
 exports.register = catchAsync(async (req, res, next)=>{
-    const {name, email, password, confirmPassword, role} = req.body
+    const {name, email, password, confirmPassword} = req.body
     const user = await prisma.user.findUnique({where:{email}})
     if(user){
         return next(new AppError('User already has been taken! Try with another email',400))
@@ -19,7 +19,7 @@ exports.register = catchAsync(async (req, res, next)=>{
     }
     const hashedPassword = await bcrypt.hash(password, 12)
     const newUser = await prisma.user.create({
-        data:{name, email, passwordHash:hashedPassword, role}
+        data:{name, email, passwordHash:hashedPassword}
     })
     const token = jwt.sign({id:newUser}, process.env.JWT_SECRET, {expiresIn:process.env.JWT_EXPIREIN})
 

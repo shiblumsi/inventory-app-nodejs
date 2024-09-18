@@ -14,11 +14,7 @@ datasource db {
 }
 
 
-enum Role{
-  admin
-  staff
-  customer
-}
+
 
 model OTP {
   id            Int       @id @default(autoincrement())
@@ -34,7 +30,6 @@ model User {
   name          String
   email         String    @unique
   passwordHash  String?
-  role          Role    @default(customer)
   passwordResetToken String?
   passwordResetExpires DateTime?
   createdAt     DateTime  @default(now())
@@ -44,6 +39,13 @@ model User {
   carts         Cart[]    // Reverse relation to Cart
   payments      Payment[] // Reverse relation to Payment
   otps          OTP[]
+}
+
+
+model Admin {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String?
 }
 
 model Product {
