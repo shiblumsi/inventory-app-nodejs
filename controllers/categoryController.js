@@ -45,7 +45,7 @@ exports.createCategory = catchAsync(async (req, res, next) => {
   
   // Get All Categories
   exports.getAllCategory = catchAsync(async (req, res, next) => {
-    const allData = await prisma.category.findMany();
+    const allData = await prisma.category.findMany({include:{images:true}});
   
     if (!allData || allData.length === 0) {
       return next(new AppError('No categories found', 404));
@@ -62,6 +62,7 @@ exports.createCategory = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const singleData = await prisma.category.findUnique({
       where: { id: parseInt(id) },
+      include:{images:true}
     });
   
     if (!singleData) {

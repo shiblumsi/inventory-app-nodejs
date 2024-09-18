@@ -51,7 +51,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   
   // Get All Products
 exports.getAllProduct = catchAsync(async (req, res, next) => {
-    const allData = await prisma.product.findMany()
+    const allData = await prisma.product.findMany({include:{images:true}})
   
     if (!allData || allData.length === 0) {
       return next(new AppError('No product found', 404));
@@ -69,6 +69,7 @@ exports.getSingleProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const singleData = await prisma.product.findUnique({
       where: { id: parseInt(id) },
+      include:{images:true}
     });
   
     if (!singleData) {
