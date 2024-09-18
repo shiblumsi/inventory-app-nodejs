@@ -9,7 +9,6 @@ const cartRoutes = require('./routes/cartRoutes')
 const orderRoutes = require('./routes/orderRoutes')
 const adminOrderRoutes = require('./routes/adminOrderRoutes')
 const paymentRoutes = require('./routes/paymentRoutes')
-const productImageRoutes = require('./routes/productFileRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 // const otpRoutes = require('./routes/otpRoutes')
 
@@ -90,9 +89,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 app.use('/api/v1/admin', adminRoutes)
-app.use('/api/v1/uploads/category', categoryRoutes)
+app.use('/api/v1/category', categoryRoutes)
 app.use('/api/v1/product', productRoutes)
-app.use('/api/v1/uploads/product', productImageRoutes)
 app.use('/api/v1/auth', userRoutes)
 app.use('/api/v1/cart', cartRoutes)
 app.use('/api/v1/order', orderRoutes)

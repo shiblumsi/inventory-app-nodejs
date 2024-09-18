@@ -2,18 +2,22 @@ const express = require("express")
 const categoryController = require('../controllers/categoryController')
 const authHandler = require('../middlewares/authMiddleware')
 const uploads = require('../utils/multerConfig')
-const categoryFileController = require('../controllers/categoryFileController')
 
 const router = express.Router()
 
 
-router.post('/:categoryId/files', uploads.categoryFileUpload.array('images', 5), categoryFileController.uploadFiles)
 router.use(authHandler.adminRequired);
+
+
+router.post('/:categoryId/files', uploads.categoryFileUpload.array('images', 5), categoryController.uploadFiles)
+router.get('/:categoryId/files', categoryController.getIFilesByCategory);
+router.delete('/file/:fileId', categoryController.deleteFiles);
+
 
 router
   .route('/')
   .get(categoryController.getAllCategory)
-  .post(categoryController.createCategory)
+  .post(uploads.categoryFileUpload.array('images', 5),categoryController.createCategory)
 
 router
   .route('/:id')

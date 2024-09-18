@@ -1,5 +1,5 @@
-const { prisma } = require("../DB/db.config");
-const catchAsync = require("../utils/catchAsync");
+const { prisma } = require("../../DB/db.config");
+const catchAsync = require("../../utils/catchAsync");
 
 exports.getAllOrders = catchAsync( async (req, res, next)=>{
     const {status, startDate, endDate, page=1, limit=10} = req.query
