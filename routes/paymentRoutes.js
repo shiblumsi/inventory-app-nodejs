@@ -1,6 +1,6 @@
 const express = require('express');
 const orderController = require('../controllers/orderController');
-const authHandler = require('../middlewares/authMiddleware')
+const authHandler = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 //router.use(authHandler.protected)

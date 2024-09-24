@@ -10,31 +10,38 @@ const createFolderIfNotExists = (folderPath) => {
 };
 
 // Set storage with dynamic folder for images or PDFs
-const storage = (folder) => multer.diskStorage({
-  destination: (req, file, cb) => {
-    // Determine if the file is an image or a PDF
-    const fileTypes = /jpeg|jpg|png|pdf/;
-    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = fileTypes.test(file.mimetype);
+const storage = (folder) =>
+  multer.diskStorage({
+    destination: (req, file, cb) => {
+      // Determine if the file is an image or a PDF
+      const fileTypes = /jpeg|jpg|png|pdf/;
+      const extname = fileTypes.test(
+        path.extname(file.originalname).toLowerCase()
+      );
+      const mimetype = fileTypes.test(file.mimetype);
 
-    if (extname && mimetype) {
-      // Choose subfolder based on the file type
-      const subFolder = /pdf/.test(file.mimetype) ? 'pdf' : 'image';
-      const folderPath = `uploads/${folder}/${subFolder}/`;
+      if (extname && mimetype) {
+        // Choose subfolder based on the file type
+        const subFolder = /pdf/.test(file.mimetype) ? 'pdf' : 'image';
+        const folderPath = `uploads/${folder}/${subFolder}/`;
 
-      // Ensure the folder exists
-      createFolderIfNotExists(folderPath);
+        // Ensure the folder exists
+        createFolderIfNotExists(folderPath);
 
-      // Store the file in the appropriate subfolder
-      cb(null, folderPath);
-    } else {
-      cb(new Error('Invalid file type. Only JPEG, JPG, PNG, and PDF files are allowed.'));
-    }
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}_${file.originalname}`);
-  }
-});
+        // Store the file in the appropriate subfolder
+        cb(null, folderPath);
+      } else {
+        cb(
+          new Error(
+            'Invalid file type. Only JPEG, JPG, PNG, and PDF files are allowed.'
+          )
+        );
+      }
+    },
+    filename: (req, file, cb) => {
+      cb(null, `${Date.now()}_${file.originalname}`);
+    },
+  });
 
 // File type validation
 const fileFilter = (req, file, cb) => {
@@ -52,17 +59,15 @@ const fileFilter = (req, file, cb) => {
 // Multer upload for product, category images, and PDFs
 const productFileUpload = multer({
   storage: storage('product'),
-  fileFilter
+  fileFilter,
 });
 
 const categoryFileUpload = multer({
   storage: storage('category'),
-  fileFilter
+  fileFilter,
 });
-
-
 
 module.exports = {
   productFileUpload,
-  categoryFileUpload
+  categoryFileUpload,
 };

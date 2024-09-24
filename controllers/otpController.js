@@ -31,12 +31,9 @@
 
 // const serviceAccount = require('../service/firebase-otp.json');
 
-
-
 // admin.initializeApp({
 //   credential: admin.credential.cert(serviceAccount),
 // });
-
 
 // exports.sendOtp = async (req, res)=>{
 //   const { phoneNumber } = req.body;
@@ -51,7 +48,7 @@
 //     });
 
 //     const confirmationResult = await admin.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier);
-    
+
 //     res.status(200).send({ message: 'OTP sent successfully', data: confirmationResult });
 //   } catch (error) {
 //     console.error('Error sending OTP:', error);

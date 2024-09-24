@@ -5,12 +5,11 @@ info:
   description: Simple APIs for managing Inventory
 
 servers:
-  - url: https://inventory-app-nodejs.onrender.com  # Production
-  - url: http://localhost:8000                    # Local
-
+  - url: https://inventory-app-nodejs.onrender.com # Production
+  - url: http://localhost:8000 # Local
 
 paths:
-# Auth Routes
+  # Auth Routes
   /api/v1/auth/register:
     post:
       tags:
@@ -50,7 +49,7 @@ paths:
                   token:
                     type: string
                     description: JWT token
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
         401:
           description: Unauthorized, invalid credentials
 
@@ -106,7 +105,7 @@ paths:
         - Auth
       summary: Update the user's password
       security:
-        - bearerAuth: []  # Requires JWT token
+        - bearerAuth: [] # Requires JWT token
       requestBody:
         required: true
         content:
@@ -120,14 +119,14 @@ paths:
           description: Bad request, invalid input
         401:
           description: Unauthorized, invalid or expired token
-# Product Routes
+  # Product Routes
   /api/v1/product:
     get:
       tags:
         - Product
       summary: Retrieve all products
       security:
-        - bearerAuth: []  # Protected by JWT
+        - bearerAuth: [] # Protected by JWT
       responses:
         200:
           description: A list of products
@@ -143,7 +142,7 @@ paths:
         - Product
       summary: Create a new product
       security:
-        - bearerAuth: []  # Protected by JWT
+        - bearerAuth: [] # Protected by JWT
       requestBody:
         required: true
         content:
@@ -160,7 +159,7 @@ paths:
         - Product
       summary: Get a product by ID
       security:
-        - bearerAuth: []  # Protected by JWT
+        - bearerAuth: [] # Protected by JWT
       parameters:
         - in: path
           name: id
@@ -178,7 +177,7 @@ paths:
         - Product
       summary: Update a product by ID
       security:
-        - bearerAuth: []  # Protected by JWT
+        - bearerAuth: [] # Protected by JWT
       parameters:
         - in: path
           name: id
@@ -201,7 +200,7 @@ paths:
       tags:
         - Product
       summary: Delete a product by ID
-# Category Routes
+  # Category Routes
   /api/v1/category:
     get:
       tags:
@@ -288,7 +287,7 @@ paths:
           description: Category deleted successfully
         404:
           description: Category not found
-# Cart Route
+  # Cart Route
   /api/v1/cart/add:
     post:
       tags:
@@ -397,7 +396,7 @@ paths:
           description: Cart item updated successfully
         400:
           description: Bad request, invalid input
-# order Apis
+  # order Apis
   /api/v1/order/place-order:
     post:
       tags:
@@ -408,7 +407,7 @@ paths:
           description: Order placed successfully
         400:
           description: Bad request, invalid input
-# Payments Apis
+  # Payments Apis
   /api/v1/payment/success:
     post:
       tags:
@@ -423,10 +422,10 @@ paths:
               properties:
                 paymentId:
                   type: string
-                  example: "12345"
+                  example: '12345'
                 status:
                   type: string
-                  example: "success"
+                  example: 'success'
       responses:
         200:
           description: Payment success processed
@@ -447,10 +446,10 @@ paths:
               properties:
                 paymentId:
                   type: string
-                  example: "12345"
+                  example: '12345'
                 status:
                   type: string
-                  example: "failure"
+                  example: 'failure'
       responses:
         200:
           description: Payment failure processed
@@ -471,16 +470,15 @@ paths:
               properties:
                 paymentId:
                   type: string
-                  example: "12345"
+                  example: '12345'
                 status:
                   type: string
-                  example: "cancelled"
+                  example: 'cancelled'
       responses:
         200:
           description: Payment cancellation processed
         400:
           description: Bad request, invalid input
-
 
 # Security scheme for JWT
 components:
@@ -535,7 +533,6 @@ components:
           type: string
           example: newpassword123
 
-
     updatePassword:
       type: object
       properties:
@@ -548,9 +545,8 @@ components:
         confirmNewPassword:
           type: string
           example: newpassword123
-    
 
-    # Product 
+    # Product
     product:
       type: object
       properties:
@@ -580,8 +576,8 @@ components:
         description:
           type: string
           example: A brand new description
-       
-    #Cart 
+
+    #Cart
     add-up-cart:
       type: object
       properties:
@@ -610,4 +606,4 @@ components:
           example: 5
 
 security:
-  - bearerAuth: []  # Protected by JWT
+  - bearerAuth: [] # Protected by JWT
