@@ -1,0 +1,112 @@
+const { prisma } = require('../DB/db.config');
+const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
+const {sendEmail} = require('../service/sendEmail')
+
+exports.createTicket = catchAsync(async (req, res, next) => {
+  const { title, description } = req.body;
+  console.log(req.user);
+
+  const ticket = await prisma.ticket.create({
+    data: {
+      title,
+      description,
+      user: { connect: { id: req.user.id } },
+      status: 'OPEN',
+    },
+  });
+  if (!ticket) {
+    return next(new AppError('creation failed', 500));
+  }
+
+  return res.status(201).json({
+    status: 'success',
+    data: ticket,
+  });
+});
+
+exports.getTicketById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const ticket = await prisma.ticket.findUnique({
+    where: { id: parseInt(id) },
+    include: {
+      user: true,
+    },
+  });
+
+  if (!ticket) {
+    return next(new AppError(`No ticket found with ID ${id}`, 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: ticket,
+  });
+});
+
+exports.getAllTickets = catchAsync(async (req, res, next) => {
+  const tickets = await prisma.ticket.findMany({
+    include: {
+      user: true,
+    },
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: tickets,
+  });
+});
+
+exports.updateTicket = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const ticket = await prisma.ticket.findUnique({
+    where: { id: parseInt(id) },
+    include: { user: true },
+  });
+
+  if (!ticket) {
+    return next(new AppError(`No ticket found with ID ${id}`, 404));
+  }
+
+  const updatedTicket = await prisma.ticket.update({
+    where: { id: parseInt(id) },
+    data: {
+      status,
+    },
+    include: {
+      user: true,
+    },
+  });
+  const message = `solved your problem!!!`;
+  if(status === 'RESOLVED'){
+    try {
+        await sendEmail({
+          email: ticket.user.email,
+          subject: 'problem solved',
+          message,
+        });
+    
+        return res.status(200).json({
+          status: 'success',
+          message: 'message sent to user email!',
+          data:updatedTicket
+        });
+      } catch (error) {
+        console.log('qqqqqq', error);
+    
+        return next(
+          new AppError(
+            'There was an error sending the email. Try again later!',
+            500
+          )
+        );
+      }
+  }
+  return res.status(200).json({
+    status: 'success',
+    data:updatedTicket
+  });
+});

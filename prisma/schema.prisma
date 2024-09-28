@@ -39,6 +39,7 @@ model User {
   carts         Cart[]    // Reverse relation to Cart
   payments      Payment[] // Reverse relation to Payment
   otps          OTP[]
+  tickets       Ticket[]
 }
 
 
@@ -152,4 +153,23 @@ model Address {
   createdAt     DateTime  @default(now())
   user          User      @relation(fields: [userId], references: [id])
   orders        Order[]         
+}
+
+
+model Ticket {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  status      TicketStatus @default(OPEN)
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
 }

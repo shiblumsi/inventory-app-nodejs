@@ -10,6 +10,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const adminOrderRoutes = require('./routes/adminOrderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const ticketRoutes = require('./routes/ticketRoute')
 // const otpRoutes = require('./routes/otpRoutes')
 
 const passport = require('./service/passport');
@@ -102,6 +103,7 @@ app.use('/api/v1/product', productRoutes);
 app.use('/api/v1/auth', userRoutes);
 app.use('/api/v1/cart', cartRoutes);
 app.use('/api/v1/order', orderRoutes);
+app.use('/api/v1/ticket', ticketRoutes);
 app.use('/api/v1/admin', adminOrderRoutes);
 app.use('/payment', paymentRoutes);
 // app.use('/api/v1/otp', otpRoutes)
