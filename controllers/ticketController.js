@@ -31,7 +31,18 @@ exports.getTicketById = catchAsync(async (req, res, next) => {
   const ticket = await prisma.ticket.findUnique({
     where: { id: parseInt(id) },
     include: {
-      user: true,
+      user: {
+        select:{
+          name:true,
+          email:true
+        }
+      },
+      messages: {
+        select:{
+          senderType:true,
+          message:true
+        }
+      } 
     },
   });
 
@@ -108,5 +119,51 @@ exports.updateTicket = catchAsync(async (req, res, next) => {
   return res.status(200).json({
     status: 'success',
     data:updatedTicket
+  });
+});
+
+
+
+exports.createMessage = catchAsync(async (req, res, next) => {
+  const { ticketId, message } = req.body;
+  const senderType = req.user.isAdmin ? 'ADMIN' : 'USER'; // Check if the user is an admin
+  
+  const ticket = await prisma.ticket.findUnique({
+    where: { id: parseInt(ticketId) },
+  });
+  
+  if (!ticket) {
+    return next(new AppError(`No ticket found with ID ${ticketId}`, 404));
+  }
+
+  const ticketMessage = await prisma.ticketMessage.create({
+    data: {
+      ticketId: parseInt(ticketId),
+      senderType,
+      message,
+    },
+  });
+
+  res.status(201).json({
+    status: 'success',
+    data: ticketMessage,
+  });
+});
+
+exports.getMessagesByTicketId = catchAsync(async (req, res, next) => {
+  const { ticketId } = req.params;
+
+  const messages = await prisma.ticketMessage.findMany({
+    where: { ticketId: parseInt(ticketId) },
+    orderBy: { createdAt: 'asc' },
+  });
+
+  if (!messages.length) {
+    return next(new AppError(`No messages found for ticket ID ${ticketId}`, 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: messages,
   });
 });

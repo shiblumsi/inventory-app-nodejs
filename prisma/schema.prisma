@@ -165,6 +165,7 @@ model Ticket {
   userId      Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  messages    TicketMessage[]
 }
 
 enum TicketStatus {
@@ -172,4 +173,18 @@ enum TicketStatus {
   IN_PROGRESS
   RESOLVED
   CLOSED
+}
+
+model TicketMessage {
+  id          Int      @id @default(autoincrement())
+  ticketId    Int
+  senderType  SenderType
+  message     String
+  createdAt   DateTime @default(now())
+  ticket      Ticket   @relation(fields: [ticketId], references: [id])
+}
+
+enum SenderType {
+  USER
+  ADMIN
 }

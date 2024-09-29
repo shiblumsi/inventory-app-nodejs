@@ -34,7 +34,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   const token = jwt.sign(
-    { id: admin.id, role: 'admin' },
+    { id: admin.id, role: 'ADMIN' },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIREIN }
   );

@@ -15,11 +15,21 @@ exports.protected = catchAsync(async (req, res, next) => {
   if (!token) {
     return next(new AppError('Please log in to get access...😎'));
   }
-  const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  const currentUser = await prisma.user.findUnique({
-    where: { id: decode.id },
-  });
-  req.user = currentUser;
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  // Check if the user is an admin or regular user based on the token's role
+  console.log(decoded)
+  if (decoded.role === 'ADMIN') {
+    req.user = await prisma.admin.findUnique({
+      where: { id: decoded.id },
+    });
+    req.user.isAdmin = true;  // Add this flag to distinguish
+  } else {
+    req.user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+    req.user.isAdmin = false; // Add this flag to distinguish
+  }
+
 
   next();
 });
@@ -49,13 +59,13 @@ exports.adminRequired = catchAsync(async (req, res, next) => {
   const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   console.log('decoded data', decode);
 
-  if (!decode.role || decode.role !== 'admin') {
+  if (!decode.role || decode.role !== 'ADMIN') {
     return next(
       new AppError('You do not have permission to access this route...🕵️‍♀️', 403)
     );
   }
 
-  if (decode.role === 'admin') {
+  if (decode.role === 'ADMIN') {
     req.admin = await prisma.admin.findUnique({
       where: { id: decode.id },
     });
